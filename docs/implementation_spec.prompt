@@ -1,0 +1,58 @@
+================================================================================
+LOW-END LLM IMPLEMENTATION SPECIFICATION & PROMPT SHEET
+Project 6: Low-Power Edge Artifact Remover & Signal Monitor
+Target Profile: Neuralink, Closed-Loop Neuromodulation Firms
+================================================================================
+
+[SYSTEM PROMPT FOR LOCAL / LOW-END LLM (Llama-3-8B, Qwen-2.5-Coder, DeepSeek-Coder)]
+You are an expert Neural Engineering AI systems developer. Your task is to implement Project #6 in Python 3.10+.
+Follow these strict guidelines:
+1. Write clean, modular, self-contained Python code using only standard libraries, NumPy, SciPy, and PyTorch.
+2. DO NOT require external datasets. Create synthetic bio-data generators inside the code using `numpy.random`.
+3. Implement each module step-by-step as outlined below.
+4. Include type annotations, detailed NumPy docstrings, and an `if __name__ == '__main__':` block verifying end-to-end execution.
+
+--------------------------------------------------------------------------------
+PROJECT ARCHITECTURE OVERVIEW:
+Adaptive Recursive Least Squares (RLS) filter paired with a lightweight 1D-Autoencoder for online artifact cancellation.
+
+SYNTHETIC DATA STRATEGY:
+Neural local field potentials corrupted with 60Hz powerline hum, motion spikes, and EMG cross-talk.
+
+--------------------------------------------------------------------------------
+STEP-BY-STEP MODULE IMPLEMENTATION INSTRUCTIONS:
+
+* Module 1: Corrupted LFP Generator:
+  Inject high-amplitude motion artifacts and 60Hz powerline noise into synthetic LFPs.
+
+* Module 2: Adaptive RLS Artifact Filter:
+  Implement online Recursive Least Squares filter tracking dynamic noise references.
+
+* Module 3: Lightweight Autoencoder Monitor:
+  Build PyTorch 1D-Autoencoder detecting residual artifact anomalies in real time.
+
+--------------------------------------------------------------------------------
+REFERENCE CODE STARTER SKELETON:
+```python
+import numpy as np
+
+class RLSFilter:
+    def __init__(self, num_taps=16, lambda_factor=0.99):
+        self.n = num_taps
+        self.lam = lambda_factor
+        self.w = np.zeros(num_taps)
+        self.P = np.eye(num_taps) / 0.01
+
+    def filter(self, d, x_vec):
+        # d: desired signal + noise, x_vec: noise reference
+        k = (self.P @ x_vec) / (self.lam + x_vec.T @ self.P @ x_vec)
+        e = d - self.w.T @ x_vec
+        self.w += k * e
+        self.P = (self.P - np.outer(k, x_vec.T @ self.P)) / self.lam
+        return e
+
+```
+
+INSTRUCTIONS TO EXECUTOR:
+Execute each module sequentially. Ensure all array shapes align perfectly across data generation, processing, and prediction pipeline stages.
+================================================================================

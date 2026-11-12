@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Project #6 Implementation Document - Low-Power Edge Artifact Remover & Signal Monitor</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.6; color: #1e293b; background-color: #f8fafc; padding: 30px; }
+        .container { max-width: 900px; margin: 0 auto; background: #ffffff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h1 { color: #0f172a; font-size: 24px; border-bottom: 2px solid #3b82f6; padding-bottom: 10px; margin-top: 0; }
+        h2 { color: #1e40af; font-size: 18px; margin-top: 25px; }
+        .badge { display: inline-block; background: #e0f2fe; color: #0369a1; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 12px; margin-bottom: 15px; }
+        .box { background: #f1f5f9; border-left: 4px solid #3b82f6; padding: 15px; margin: 15px 0; border-radius: 0 6px 6px 0; }
+        ul { padding-left: 20px; }
+        li { margin-bottom: 10px; }
+        pre { background: #0f172a; color: #f8fafc; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 13px; }
+        footer { margin-top: 40px; font-size: 12px; color: #64748b; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <span class="badge">Project #6 Specification</span>
+        <h1>Low-Power Edge Artifact Remover & Signal Monitor</h1>
+        <p><strong>Target Industry Profile:</strong> Neuralink, Closed-Loop Neuromodulation Firms</p>
+        
+        <h2>1. System Architecture & Concept</h2>
+        <div class="box">
+            <p>Adaptive Recursive Least Squares (RLS) filter paired with a lightweight 1D-Autoencoder for online artifact cancellation.</p>
+        </div>
+
+        <h2>2. Synthetic Bio-Data Engineering Strategy</h2>
+        <p>Neural local field potentials corrupted with 60Hz powerline hum, motion spikes, and EMG cross-talk.</p>
+
+        <h2>3. Low-End LLM Prompt & Module Blueprint</h2>
+        <ul>
+            <li><strong>Module 1: Corrupted LFP Generator:</strong> Inject high-amplitude motion artifacts and 60Hz powerline noise into synthetic LFPs.</li>
+            <li><strong>Module 2: Adaptive RLS Artifact Filter:</strong> Implement online Recursive Least Squares filter tracking dynamic noise references.</li>
+            <li><strong>Module 3: Lightweight Autoencoder Monitor:</strong> Build PyTorch 1D-Autoencoder detecting residual artifact anomalies in real time.</li>
+        </ul>
+
+        <h2>4. Core Technical Starter Skeleton</h2>
+        <pre><code>import numpy as np
+
+class RLSFilter:
+    def __init__(self, num_taps=16, lambda_factor=0.99):
+        self.n = num_taps
+        self.lam = lambda_factor
+        self.w = np.zeros(num_taps)
+        self.P = np.eye(num_taps) / 0.01
+
+    def filter(self, d, x_vec):
+        # d: desired signal + noise, x_vec: noise reference
+        k = (self.P @ x_vec) / (self.lam + x_vec.T @ self.P @ x_vec)
+        e = d - self.w.T @ x_vec
+        self.w += k * e
+        self.P = (self.P - np.outer(k, x_vec.T @ self.P)) / self.lam
+        return e
+</code></pre>
+
+        <footer>
+            <p>Neurotech Technical Blueprint | Prepared for Pranav Mohankumar | UIUC Neural Engineering</p>
+        </footer>
+    </div>
+</body>
+</html>
